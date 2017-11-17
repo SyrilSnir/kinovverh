@@ -42,7 +42,7 @@ $(function(){
 	function reZoom(rr){
 		if(screen.width > 600){
 		 	if(dt == false){
-		 		if(rr == "000") document.location.reload();
+		 		//if(rr == "000") document.location.reload();
 			 	var m = screen.width / (1170 / 100) / 100;
 			 	dt = true;mobile = false;
 			 	$("meta[name='viewport']").attr("content","width=1170, initial-scale="+m.toFixed(2));
@@ -53,7 +53,7 @@ $(function(){
 		 	
 		 }else{
 		 	if(mobile == false){
-		 		if(rr == "000") document.location.reload();
+		 		//if(rr == "000") document.location.reload();
 		 		dt = false;mobile = true;
 		 		$("meta[name='viewport']").attr("content","width=device-width, initial-scale=1");
 			 	$("head").append("<link href=\"/bitrix/templates/racoon/css/mobile.css\" rel=\"stylesheet\">");
