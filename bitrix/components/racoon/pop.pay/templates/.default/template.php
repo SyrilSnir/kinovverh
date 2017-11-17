@@ -47,6 +47,7 @@ if(empty($arResult))
 					<?/*p class="modal-title">Цена за скачивание<br />«<?=$arResult["FILM"]['NAME']?>»</p>
 					<a href="<?=$arResult["PAY"]["URL_DOWNLOAD"]?>" class="pop-button"><?=$arResult["DOWNLOAD_SUMM"]?> рублей</a*/?>
 					<p class="pay-description2">Если Вы уже ранее оплатили фильм на другом устройстве, введите код, полученный при оплате</p>
+					<p class="enter-form__rez"></p>
 					<div class="film_code">
 	                <form method="get" action="">
 	                    <input class="film_code__input" required placeholder="Ввести код" type="text" name="code">
