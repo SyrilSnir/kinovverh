@@ -1369,6 +1369,7 @@ form .error{
 .enter-form__rez{
 	font-size: 14px;
 	color: #000;
+	text-align: center;
 	background-color: #fcc;
 }
 .carousel-inner img{
