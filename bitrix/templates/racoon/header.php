@@ -32,7 +32,7 @@
       <!--
 var message="Правый клик запрещен!";
 ///////////////////////////////////
-
+/*
       function clickIE4(){
       if (event.button==2){
       alert(message);
@@ -54,7 +54,7 @@ if (document.layers){
       else if (document.all&&!document.getElementById){
       document.onmousedown=clickIE4;
       }
-document.oncontextmenu=new Function("return false")
+document.oncontextmenu=new Function("return false")*/
 // --> 
       </script>
       
