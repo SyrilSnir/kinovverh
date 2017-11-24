@@ -31,13 +31,13 @@ if(CModule::IncludeModule("iblock"))
         $_SESSION['U_CODE'][$arResult['ID']] = $code;
     }*/
 	// *** Сохранение получение кода из сессии
-	if(!$USER->IsAuthorized()){
+	//if(!$USER->IsAuthorized()){
 	    if(isset($_GET['code']) && $_GET['code'] != "" ){//&& !$USER->IsAuthorized()
 	    	$_SESSION['U_CODE'][$arResult['ID']] = $_GET['code'];
 	        //$_SESSION['U_CODE'] = $_GET['code'];
 	    }
 	    if(isset($_SESSION['U_CODE'][$arResult['ID']])) $u_code = $_SESSION['U_CODE'][$arResult['ID']];
-    }
+   // }
 	// *** Получаем Названия категорий
 	foreach ($prop['GENRE']['VALUE'] as $g_id) {
 		$arSelect = Array("NAME");
@@ -77,27 +77,39 @@ if(CModule::IncludeModule("iblock"))
 		*/
 		if($USER->IsAuthorized() || (isset($u_code) && $u_code !="")){
 
-			$p_arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_FILM_ID", "PROPERTY_DOWNLOAD", "PROPERTY_VIEW_COUNT", "PROPERTY_DOWN_COUNT");
+			$p_arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_FILM_ID", "PROPERTY_DOWNLOAD", "PROPERTY_VIEW_COUNT", "PROPERTY_DOWN_COUNT","PROPERTY_USER_ID");
 			$p_arFilter = Array("IBLOCK_ID"=>13, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y", "PROPERTY_FILM_ID" => array($arFields['ID']));
 
 			if(isset($u_code)){
-				$p_arFilter['PROPERTY_CODE_NUMBER'] = $u_code;
-			}
+				$p_arFilter['PROPERTY_CODE_NUMBER'] = $u_code;			                                
+                        } else {
+                            if($USER->IsAuthorized()){
+                                $p_arFilter["PROPERTY_USER_ID"] = $USER->GetID();
+                            }
+                        }
+                        /*
 			if($USER->IsAuthorized()){
-                $p_arFilter["PROPERTY_USER_ID"] = $USER->GetID();
-            }
+                            $p_arFilter["PROPERTY_USER_ID"] = $USER->GetID();
+                        }
 			else{
-                $p_arFilter["PROPERTY_USER_ID"] = false;
-            }
+                            $p_arFilter["PROPERTY_USER_ID"] = false;
+                        }                         
+                         */
 			//if($_GET["test"]) print_r($p_arFilter);		
 			$p_res = CIBlockElement::GetList(Array("active_from" => "desc"), $p_arFilter, false, false, $p_arSelect);
 
 			//echo $p_res->SelectedRowsCount();
 			$film["DOWNOLAD"] = array("ACTIVE" => false);
-			$film["VIEW"] = array("ACTIVE" => false);
+			$film["VIEW"] = array("ACTIVE" => false);                        
+                        
 			$film_free = false;
-                        $exist = false;
-                        $show_expired = false;
+                        
+                        
+                        // флаги:
+                        $exist = false; // код не найден
+                        $show_expired = false; // срок действия кода истек                        
+                        $anon_code = false; // введен анонимный код авторизованным пользователем
+                        $other_user = false; // анонимом введен пользовательский код 
 
 			while($p_ob = $p_res->GetNextElement())
 			{                                
@@ -107,7 +119,12 @@ if(CModule::IncludeModule("iblock"))
 				$f_hash = md5($prop['URL_VIDEO']['VALUE'].":".$_SERVER['REMOTE_ADDR'].":".date("d:m:Y:H"));//$arFields['ID'].":".$_SERVER['REMOTE_ADDR'].":".date("d:m:Y:H")
 				$_SESSION['OUT_HASH'] = $f_hash;
 				$_SESSION['OUT_FILM'] = $prop['URL_VIDEO'];
-
+                                if (!$USER->IsAuthorized()) {
+                                    if ($p_arFields['PROPERTY_USER_ID_VALUE']) {
+                                        $other_user = true;
+                                        break;
+                                    }
+                                }
 				if($p_arFields["PROPERTY_DOWNLOAD_VALUE"] == 1 && $p_arFields['PROPERTY_DOWN_COUNT_VALUE'] > 0){
 					$film["DOWNOLAD"] = array(
 						"ACTIVE" => true,
@@ -128,6 +145,9 @@ if(CModule::IncludeModule("iblock"))
 					$_SESSION['OUT_HASH'] = $f_hash;
 					$_SESSION['OUT_FILM'] = $prop['URL_VIDEO'];
 				}
+                                if (!$p_arFields['PROPERTY_USER_ID_VALUE']) {
+                                    $anon_code = true;
+                                }
 				
 
 			}
@@ -136,8 +156,37 @@ if(CModule::IncludeModule("iblock"))
 
 }
 
-if (!$exist || $show_expired ) {
-    if (!empty($_GET['code'])) { 
+// модальнон окно добавления анонимного кода
+if ($anon_code) {
+    if ($USER->IsAuthorized()) {
+            ?>
+        <script>
+            window.onload = function() {
+                $('#pop-add-code').modal('show');
+                $('#add-code-user').click(function () {
+                    $.ajax({
+                        url: "/ajax.php",
+                        type: "POST",
+                        data: {
+                            action: "add_code_to_user",
+                            code: <?php echo $u_code ?>
+                        },
+                        success: function(response){
+                            $('#pop-add-code').modal('hide');
+                        }
+                    });
+                });
+            };
+        </script>>
+        
+ <?php
+    }
+}
+if (!$exist || $show_expired || $other_user ) {
+    if ($other_user) {
+        $err_text = 'Введен код, принадлежащий зарегистрированному пользователю';
+    }
+    elseif (!empty($_GET['code'])) { 
         unset ($p_arFilter["ACTIVE_DATE"]);
         unset ($p_arFilter["ACTIVE"]);
         $p_res = CIBlockElement::GetList(Array("active_from" => "desc"), $p_arFilter, false, false, $p_arSelect);
@@ -150,7 +199,8 @@ if (!$exist || $show_expired ) {
             else {
                 $err_text = 'Введен неверный код доступа';
             }
-        }
+        } 
+    }
     
     ?>
 
@@ -161,7 +211,7 @@ if (!$exist || $show_expired ) {
 		$('#pop-pay').modal('show');                
 	}
 </script>
-    <?php   } 
+    <?php    
 }
 
 // TEST
@@ -231,7 +281,7 @@ global $USER;
 							<p class="film__title">Кинозал семейного просмотра</p>
 							<p class="film__description">Только проверенные фильмы в хорошем качестве. Купите этот фильм или подписку на все фильмы и наслаждайтесь просмотром фильма без рекламы и на любом устройстве!</p>
 							<div class="film__buttons ">
-								<a href="#pop-pay" class="caption-btn__btn" data-toggle="modal" >Смотреть онлайн</a>
+								<a href="#pop-pay" class="caption-btn__btn" data-toggle="modal" >Оплатить</a>
 								<?php if($film["DOWNOLAD"]["ACTIVE"]):?>
 									<a href="/kinozal/download/<?=$film["DOWNOLAD"]["ID"]?>/<?=$film["DOWNOLAD"]["URL"]?>" class="caption-btn__btn film-download" data-toggle="modal" download >Скачать фильм</a>
 								<?php endif;?>

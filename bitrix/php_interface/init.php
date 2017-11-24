@@ -1,4 +1,4 @@
-<?
+<?php
 function pre_print($array){
 	echo "<pre>";
 	print_r($array);

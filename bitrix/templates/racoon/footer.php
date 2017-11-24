@@ -242,6 +242,22 @@
     	</div>
     </div>
 */?>
+
+	<div class="modal fade" id="pop-add-code">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle" aria-hidden="true"></i></button>
+				</div>
+				<div class="modal-body">
+    				<p class="modal-title">Внимание</p>
+					<p class="pay-description2">Введенный код не привязан к Вашей учетной записи. Вы хотите добавить его в личный кабинет?</p>
+					<button id="add-code-user" class="pop-button">OK</button>
+					<button class="pop-button" data-toggle="modal" data-dismiss="modal">Отмена</button>
+				</div>		
+			</div>
+		</div>
+	</div>
 <!-- Спасибо, ваш платеж принят -->
 	<div class="modal fade" id="pop-pay-ok">
     	<div class="modal-dialog modal-sm">
