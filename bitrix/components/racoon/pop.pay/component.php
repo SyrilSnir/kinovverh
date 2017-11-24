@@ -1,10 +1,10 @@
-<?
+<?php
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 $arResult = array();
 //$APPLICATION->SetAdditionalCSS($templateFolder."/style.css");
 
 if(CModule::IncludeModule("iblock")){
-    // ÐŸÐ¾Ð»ÑƒÑ‡Ð°ÐµÐ¼ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ð¹ Ð½Ð¾Ð¼ÐµÑ€ ÑÑ‡ÐµÑ‚Ð°
+    // Ïîëó÷àåì ïîñëåäíèé íîìåð ñ÷åòà
     $arSelect = Array("ID","PROPERTY_S_ID");
     $arFilter = Array("IBLOCK_ID"=>18, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y");
     $res = CIBlockElement::GetList(Array("PROPERTY_S_ID"=>"desc,nulls"), $arFilter, false, Array("nPageSize"=>1), $arSelect);
@@ -13,7 +13,7 @@ if(CModule::IncludeModule("iblock")){
         $arZakaz = $ob->GetFields();
     }
     unset($arSelect, $arFilter, $res, $ob);
-    // ÐŸÐžÐ›Ð£Ð§ÐÐ•Ðœ Ð¤Ð˜Ð›Ð¬Ðœ 
+    // ÏÎËÓ×ÀÅÌ ÔÈËÜÌ 
     $arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM", "DETAIL_PICTURE", "PREVIEW_TEXT", "DETAIL_PAGE_URL");
     $arFilter = Array("IBLOCK_ID"=>FILM_ID, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y", "ID"=>$arParams["FILM_ID"]);
     $res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>1), $arSelect);
@@ -24,14 +24,14 @@ if(CModule::IncludeModule("iblock")){
     }
 }
 
-    // Ð¡Ñ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ
+    // Ñòîèìîñòü
     $v_price = ($prop["PRICE_W"]["VALUE"])?$prop["PRICE_W"]["VALUE"]:ONE_FILM_SUMM; 
-    define("V_PRICE", $v_price);                    // Ð¡Ñ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ Ð¿Ñ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€Ð°
-    define("D_PRICE", $prop["PRICE_D"]["VALUE"]);   // Ð¡Ñ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ ÑÐºÐ°Ñ‡Ð¸Ð²Ð°Ð½Ð¸Ñ
+    define("V_PRICE", $v_price);                    // Ñòîèìîñòü ïðîñìîòðà
+    define("D_PRICE", $prop["PRICE_D"]["VALUE"]);   // Ñòîèìîñòü ñêà÷èâàíèÿ
     //
     global $USER;
     $schet_one = $schet_all = false;
-    // Ð¡Ñ‡ÐµÑ‚ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ñ
+    // Ñ÷åò ïîëüçîâàòåëÿ
     if($USER->IsAuthorized()){
         $rsUser = CUser::GetByID($USER->GetID());
         $arUser = $rsUser->Fetch();
@@ -50,15 +50,15 @@ if($_GET["test"]){
     print_r($arUser);
     echo "</pre>";
 }
-    // *** Ð¡Ð§Ð•Ð¢ ÐŸÐžÐ›Ð¬Ð—ÐžÐ’ÐÐ¢Ð•Ð›Ð¯ ***
+    // *** Ñ×ÅÒ ÏÎËÜÇÎÂÀÒÅËß ***
     $arResult["SCHET_VIEW"] = $schet_one;
     $arResult["SCHET_DOWNLOAD"] = $schet_all;
     $arResult["SCHET"] = $arUser['UF_SCHET'];
     //
-    // *** Ð¦Ð•ÐÐ« ***
+    // *** ÖÅÍÛ ***
     $arResult["VIEW_SUMM"] = V_PRICE;
     $arResult["DOWNLOAD_SUMM"] = D_PRICE;
-    // *** Ð”ÐÐÐÐ«Ð• Ð¤Ð˜Ð›Ð¬ÐœÐ ***
+    // *** ÄÀÍÍÛÅ ÔÈËÜÌÀ ***
     $arResult["FILM_RANGE"] = FILM_RANGE;
     $arResult["FILM"]["ID"] = $arParams["FILM_ID"];
     $arResult["FILM"]["NAME"] = $fields["NAME"];
@@ -73,26 +73,26 @@ if($_GET["test"]){
     $Shp_user = $USER->GetID();
     $Shp_dir = $APPLICATION->GetCurDir();
 
-    $inv_desc = "ÐžÐ¿Ð»Ð°Ñ‚Ð° Ñ„Ð¸Ð»ÑŒÐ¼Ð° ".$arResult['NAME'];
+    $inv_desc = "Îïëàòà ôèëüìà ".$arResult['NAME'];
     $out_summ = ($prop["PRICE_W"]["VALUE"])?$prop["PRICE_W"]["VALUE"]:ONE_FILM_SUMM;
     $Shp_film = $arParams["FILM_ID"];
-// ÐžÐ¿Ð»Ð°Ñ‚Ð° Ð¿Ñ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€Ð° Ñ„Ð¸Ð»ÑŒÐ¼Ð°  $url=
+// Îïëàòà ïðîñìîòðà ôèëüìà  $url=
     //$crc = md5("$mrh_login:$out_summ:$inv_id:$mrh_pass1:Shp_dir=$Shp_dir:Shp_film=$Shp_film:Shp_user=$Shp_user");
     $dop_arr = array('dir'=>$Shp_dir,'film'=>$Shp_film,'user'=>$Shp_user);
     $crc = Film::getFilmCrc($out_summ,$inv_id,$dop_arr);
     $arResult["PAY"]["URL_FILM"] = "https://auth.robokassa.ru/Merchant/Index.aspx?MrchLogin=$mrh_login&".
         "OutSum=$out_summ&InvId=$inv_id&Desc=$inv_desc&SignatureValue=$crc&IsTest=$IsTest&Shp_film=$Shp_film&Shp_user=$Shp_user&Shp_dir=$Shp_dir";
 
-// ÐžÐ¿Ð»Ð°Ñ‚Ð° Ð²ÑÐµÑ… Ñ„Ð¸Ð»ÑŒÐ¼Ð¾Ð²
-/*	$inv_desc = "ÐžÐ¿Ð»Ð°Ñ‚Ð° Ñ„Ð¸Ð»ÑŒÐ¼Ð¾Ð²";
+// Îïëàòà âñåõ ôèëüìîâ
+/*	$inv_desc = "Îïëàòà ôèëüìîâ";
     $out_summ = ALL_FILM_SUMM;
     $Shp_film = "ALL";
     $crc = md5("$mrh_login:$out_summ:$inv_id:$mrh_pass1:Shp_dir=$Shp_dir:Shp_film=$Shp_film:Shp_user=$Shp_user");
     $arResult["PAY"]["URL_FILMS"] = "https://auth.robokassa.ru/Merchant/Index.aspx?MrchLogin=$mrh_login&".
         "OutSum=$out_summ&InvId=$inv_id&Desc=$inv_desc&SignatureValue=$crc&IsTest=$IsTest&Shp_film=$Shp_film&Shp_user=$Shp_user&Shp_dir=$Shp_dir";*/
 
-// ÐžÐ¿Ð»Ð°Ñ‚Ð° ÑÐºÐ°Ñ‡Ð¸Ð²Ð°Ð½Ð¸Ñ
-    $inv_desc = "ÐŸÐ¾ÐºÑƒÐ¿ÐºÐ° Ñ„Ð¸Ð»ÑŒÐ¼Ð°";
+// Îïëàòà ñêà÷èâàíèÿ
+    $inv_desc = "Ïîêóïêà ôèëüìà";
     $out_summ = $prop["PRICE_D"]["VALUE"];
     //$crc = md5("$mrh_login:$out_summ:$inv_id:$mrh_pass1:Shp_dir=$Shp_dir:Shp_down=1:Shp_film=$Shp_film:Shp_user=$Shp_user");
     $dop_arr = array('dir'=>$Shp_dir,'film'=>$Shp_film,'user'=>$Shp_user, 'down'=>1);
@@ -100,13 +100,13 @@ if($_GET["test"]){
     $arResult["PAY"]["URL_DOWNLOAD"] = "https://auth.robokassa.ru/Merchant/Index.aspx?MrchLogin=$mrh_login&".
         "OutSum=$out_summ&InvId=$inv_id&Desc=$inv_desc&SignatureValue=$crc&IsTest=$IsTest&Shp_film=$Shp_film&Shp_user=$Shp_user&Shp_dir=$Shp_dir&Shp_down=1";
 
-// Ð§Ð°ÑÑ‚Ð¸Ñ‡Ð½Ð°Ñ Ð¾Ð¿Ð»Ð°Ñ‚Ð° ÑÐ¾ ÑÑ‡ÐµÑ‚Ð°
+// ×àñòè÷íàÿ îïëàòà ñî ñ÷åòà
     if($USER->IsAuthorized()){
         if($arUser['UF_SCHET'] > 0 && $arUser['UF_SCHET'] < V_PRICE){
-            $inv_desc = "ÐžÐ¿Ð»Ð°Ñ‚Ð° Ñ„Ð¸Ð»ÑŒÐ¼Ð° ".$arResult['NAME'];
+            $inv_desc = "Îïëàòà ôèëüìà ".$arResult['NAME'];
             $out_summ = V_PRICE - $arUser['UF_SCHET'];
             $arResult["PAY"]["FILM_DOPLATA"] = $out_summ;
-            // ÐžÐ¿Ð»Ð°Ñ‚Ð° Ð¿Ñ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€Ð° Ñ„Ð¸Ð»ÑŒÐ¼Ð° 
+            // Îïëàòà ïðîñìîòðà ôèëüìà 
             //$crc = md5("$mrh_login:$out_summ:$inv_id:$mrh_pass1:Shp_dir=$Shp_dir:Shp_film=$Shp_film:Shp_user=$Shp_user");
             $dop_arr = array('dir'=>$Shp_dir,'film'=>$Shp_film,'user'=>$Shp_user);
             $crc = Film::getFilmCrc($out_summ,$inv_id,$dop_arr);
@@ -114,10 +114,10 @@ if($_GET["test"]){
                 "OutSum=$out_summ&InvId=$inv_id&Desc=$inv_desc&SignatureValue=$crc&IsTest=$IsTest&Shp_film=$Shp_film&Shp_user=$Shp_user&Shp_dir=$Shp_dir";
         }
         if($arUser['UF_SCHET'] > 0 && $arUser['UF_SCHET'] < D_PRICE){
-            $inv_desc = "ÐŸÐ¾ÐºÑƒÐ¿ÐºÐ° Ñ„Ð¸Ð»ÑŒÐ¼Ð° ".$arResult['NAME'];
+            $inv_desc = "Ïîêóïêà ôèëüìà ".$arResult['NAME'];
             $out_summ = D_PRICE - $arUser['UF_SCHET'];
             $arResult["PAY"]["DOWNLOAD_DOPLATA"] = $out_summ;
-            // ÐžÐ¿Ð»Ð°Ñ‚Ð° ÑÐºÐ°Ñ‡Ð¸Ð²Ð°Ð½Ð¸Ñ Ñ„Ð¸Ð»ÑŒÐ¼Ð°
+            // Îïëàòà ñêà÷èâàíèÿ ôèëüìà
             //$crc = md5("$mrh_login:$out_summ:$inv_id:$mrh_pass1:Shp_dir=$Shp_dir:Shp_down=1:Shp_film=$Shp_film:Shp_user=$Shp_user");
             $dop_arr = array('dir'=>$Shp_dir,'film'=>$Shp_film,'user'=>$Shp_user, 'down'=>1);
             $crc = Film::getFilmCrc($out_summ,$inv_id,$dop_arr);

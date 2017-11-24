@@ -1,4 +1,4 @@
-<?
+<?php
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 
 //delayed function must return a string
@@ -16,7 +16,7 @@ if(empty($arResult))
 			<div class="modal-body">
 				
 					<p class="modal-title">Смотреть фильм<br />«<?=$arResult["FILM"]['NAME']?>»</p>
-	                <?
+	                <?php
 	                // Просмотреть фильм
 	                if($arResult["SCHET_VIEW"])
 	                	echo"<a class=\"pop-button schet-out \" data-summ='".$arResult["VIEW_SUMM"]."' href='#'> списать ".$arResult["VIEW_SUMM"]." рублей<br /> со счета</a>";
