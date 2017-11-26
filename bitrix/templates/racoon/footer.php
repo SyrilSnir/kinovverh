@@ -14,8 +14,8 @@
     (function (d, w, c) {
         (w[c] = w[c] || []).push(function() {
             try {
-                w.yaCounter40318850 = new Ya.Metrika({
-                    id:40318850,
+                w.yaCounter44880781 = new Ya.Metrika({
+                    id:44880781,
                     clickmap:true,
                     trackLinks:true,
                     accurateTrackBounce:true,
@@ -77,7 +77,7 @@
     				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle" aria-hidden="true"></i></button>
     			</div>
     			<div class="modal-body">
-                
+
     				<p class="modal-title">Вход / Регистрация</p>
 					<form class="enter-form" method="post" action="?" >
                         <input type="hidden" name="code" value="<?=$_GET['code'];?>" />
@@ -254,7 +254,7 @@
 					<p class="pay-description2">Введенный код не привязан к Вашей учетной записи. Вы хотите добавить его в личный кабинет?</p>
 					<button id="add-code-user" class="pop-button">OK</button>
 					<button class="pop-button" data-toggle="modal" data-dismiss="modal">Отмена</button>
-				</div>		
+				</div>
 			</div>
 		</div>
 	</div>

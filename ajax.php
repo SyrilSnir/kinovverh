@@ -8,8 +8,8 @@ $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 if ($action) {
     // возвращаемый код выполнения запроса:
     // 0: OK
-    // 1: операциЯ не выполнена...
-    $err_code = 1; 
+    // 1: операция не выполнена...
+    $err_code = 1;
     switch ($action) {
         case 'add_code_to_user':
             if ($USER->IsAuthorized()) {
@@ -18,11 +18,10 @@ if ($action) {
                     $film = new Film();
                     $film->addUserToCode($USER->GetID(), $code);  
                     $err_code = 0;
-                }                                
+                }
             }
             echo $err_code;
-        break;            
+        break;
     }
 }
 die();
-
