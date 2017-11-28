@@ -182,7 +182,7 @@ if ($anon_code) {
  <?php
     }
 }
-if (!$exist || $show_expired || $other_user ) {
+if ((!$exist || $show_expired || $other_user) && !$film_free) {
     if ($other_user) {
         $err_text = 'Введен код, принадлежащий зарегистрированному пользователю';
     }
